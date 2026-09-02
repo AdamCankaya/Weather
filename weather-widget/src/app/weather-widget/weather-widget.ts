@@ -5,7 +5,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { environment } from '../../environments/environment';
 import {MatIcon} from '@angular/material/icon';
-import {MatDivider} from '@angular/material/list';
 import {DatePipe} from '@angular/common';
 
 @Component({
@@ -17,7 +16,6 @@ import {DatePipe} from '@angular/common';
     MatButtonModule,
     MatProgressSpinnerModule,
     MatIcon,
-    MatDivider,
     DatePipe
   ],
   templateUrl: './weather-widget.html',
