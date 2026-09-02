@@ -1,0 +1,126 @@
+// --- SIMPLIFIED TRADING CARD STYLES ---
+
+$card-width: 320px;
+$card-height: 490px;
+$border-color: #333333;
+$prod-border-color: #d32f2f;
+
+.trading-card {
+  width: $card-width;
+  height: $card-height;
+  border: 4px solid $border-color;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: #ffffff;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+  margin: 20px auto;
+  font-family: Roboto, sans-serif;
+
+  &.production {
+    border-color: $prod-border-color;
+  }
+}
+
+.card-section {
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+// Top Header Section
+.header-section {
+  background: #f5f5f5;
+  border-bottom: 2px solid $border-color;
+
+  .location-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    .location-icon {
+      color: #1976d2;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 1.2rem;
+      font-weight: 700;
+    }
+  }
+
+  .timestamp {
+    margin: 4px 0 0 32px;
+    font-size: 0.8rem;
+    color: #666666;
+  }
+}
+
+// Middle Graphic Section (1/3 height)
+.card-graphic-wrapper {
+  flex: 0 0 33%;
+  background: linear-gradient(135deg, #e1eec3 0%, #f05053 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 2px solid $border-color;
+  position: relative;
+
+  .weather-main-icon {
+    font-size: 100px;
+    width: 100px;
+    height: 100px;
+    color: #ffffff;
+  }
+}
+
+// Bottom Details Section
+.details-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: #fafafa;
+
+  .temp-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+
+    .temperature {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #222222;
+    }
+
+    .condition-summary {
+      font-size: 1rem;
+      color: #555555;
+    }
+  }
+
+  .data-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    .data-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      color: #444444;
+
+      mat-icon {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+        color: #666666;
+      }
+    }
+  }
+
+  .refresh-btn {
+    width: 100%;
+  }
+}

@@ -1,8 +1,47 @@
-<mat-card>
-  <mat-card-content>
-    <p><strong>API Endpoint:</strong> {{ env.weatherApiUrl }}</p>
-    <p><strong>Timeout Threshold:</strong> {{ env.timeoutThresholdMs }}ms</p>
-    <p><strong>Polling Interval:</strong> {{ env.pollingIntervalMs }}ms</p>
-    <p><strong>Production Mode:</strong> {{ env.production }}</p>
-  </mat-card-content>
-</mat-card>
+<div class="trading-card" [class.production]="env.production">
+
+  <!-- 1. TOP INFO SECTION (Bordered) -->
+  <div class="card-section header-section">
+    <div class="location-container">
+      <mat-icon class="location-icon">location_on</mat-icon>
+      <h2>{{ locationName }}</h2>
+    </div>
+    <p class="timestamp">Last updated: {{ lastUpdated | date:'shortTime' }}</p>
+  </div>
+
+  <!-- 2. GRAPHIC SECTION (Top one third, centered) -->
+  <div class="card-graphic-wrapper">
+    <div class="icon-background-effect"></div>
+    <mat-icon class="weather-main-icon" [fontIcon]="weatherIcon"></mat-icon>
+  </div>
+
+  <!-- 3. BOTTOM INFO SECTION (Bordered) -->
+  <div class="card-section details-section">
+    <div class="temp-main">
+      <span class="temperature">{{ temperature }}°F</span>
+      <span class="condition-summary">{{ conditionSummary }}</span>
+    </div>
+
+    <div class="data-grid">
+      <div class="data-item">
+        <mat-icon>air</mat-icon>
+        <span>Wind: {{ windSpeed }} mph {{ windDirection }}</span>
+      </div>
+      <div class="data-item">
+        <mat-icon>water_drop</mat-icon>
+        <span>Humidity: {{ humidity }}%</span>
+      </div>
+      <div class="data-item">
+        <mat-icon>compress</mat-icon>
+        <span>Pressure: {{ pressure }} hPa</span>
+      </div>
+    </div>
+
+    <!-- Action Button -->
+    <button mat-raised-button color="primary" class="refresh-btn" (click)="refreshWeather()">
+      <mat-icon>refresh</mat-icon>
+      Refresh Forecast
+    </button>
+  </div>
+
+</div>
