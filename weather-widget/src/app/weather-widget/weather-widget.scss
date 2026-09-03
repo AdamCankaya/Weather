@@ -1,6 +1,4 @@
-// --- SIMPLIFIED TRADING CARD STYLES ---
-
-$card-width: 320px;
+$card-width: 400px;
 $card-height: 490px;
 $border-color: #333333;
 $prod-border-color: #d32f2f;
@@ -72,6 +70,13 @@ $prod-border-color: #d32f2f;
     height: 100px;
     color: #ffffff;
   }
+
+  .toggle-icon-btn {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    color: white;
+  }
 }
 
 // Bottom Details Section
@@ -81,46 +86,39 @@ $prod-border-color: #d32f2f;
   flex-direction: column;
   justify-content: space-between;
   background: #fafafa;
+  padding: 16px;
+
+  .day-period {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #333333;
+    margin-bottom: 8px;
+    text-align: center;
+
+    .period-name {
+      font-size: 1rem;
+      font-weight: 400;
+      margin-left: 8px;
+    }
+  }
+
+  .condition-summary {
+    font-size: 1.1rem;
+    color: #555555;
+    margin-bottom: 8px;
+    text-align: center;
+  }
 
   .temp-main {
     display: flex;
-    justify-content: space-between;
-    align-items: baseline;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 16px;
 
     .temperature {
-      font-size: 2rem;
+      font-size: 3rem;
       font-weight: 800;
       color: #222222;
     }
-
-    .condition-summary {
-      font-size: 1rem;
-      color: #555555;
-    }
-  }
-
-  .data-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-
-    .data-item {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 0.85rem;
-      color: #444444;
-
-      mat-icon {
-        font-size: 18px;
-        width: 18px;
-        height: 18px;
-        color: #666666;
-      }
-    }
-  }
-
-  .refresh-btn {
-    width: 100%;
   }
 }
