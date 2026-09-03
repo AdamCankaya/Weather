@@ -6,7 +6,8 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test","build:prod": "ng build --configuration production",
+    "test": "ng test",
+    "build:prod": "ng build --configuration production",
     "serve:prod": "http-server dist/weather-widget/browser -p 8080",
     "serve:ssr:weather-widget": "node dist/weather-widget/server/server.mjs"
   },
@@ -35,6 +36,7 @@
     "@angular/router": "^20.3.0",
     "@angular/ssr": "^20.3.35",
     "express": "^5.1.0",
+    "material-icons": "^1.13.14",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
   },

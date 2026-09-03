@@ -1,9 +1,13 @@
 <div class="trading-card" [class.production]="env.production">
   @if (forecast()?.errorActive!) {
     <div class="offline-container">
-      <span class="material-icons offline-icon">cloud_off</span>
+      <mat-icon class="offline-icon">cloud_off</mat-icon>
       <h3 class="offline-title">System Offline</h3>
       <p class="offline-text">Network unavailable. Awaiting connection...</p>
+      <button mat-button color="primary" class="refresh-button" (click)="refreshForecast()">
+        <mat-icon>refresh</mat-icon>
+        Refresh forecast
+      </button>
     </div>
   } @else {
       @if (forecast(); as data) {

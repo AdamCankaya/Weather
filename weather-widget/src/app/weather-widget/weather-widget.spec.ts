@@ -13,7 +13,7 @@ describe('WeatherWidget', () => {
   let mockWeatherService: jasmine.SpyObj<WeatherService>;
 
   beforeEach(async () => {
-    mockWeatherService = jasmine.createSpyObj('WeatherService', ['getForecast']);
+    mockWeatherService = jasmine.createSpyObj('WeatherService', ['getForecast', 'clearCache']);
     mockWeatherService.getForecast.and.returnValue(of({
         period1: { temperature: 80, shortForecast: 'Sunny', name: 'Morning' },
         gridpoints: {}
@@ -142,5 +142,22 @@ describe('WeatherWidget', () => {
       const rootElement = fixture.debugElement.query(By.css('.trading-card')).nativeElement;
       expect(rootElement.classList.contains('production')).toBeFalse();
     });
+  });
+
+  it('should call clearCache and getForecast when Refresh button is clicked', async () => {
+    mockWeatherService.getForecast.and.returnValue(of({ errorActive: true }));
+    fixture = TestBed.createComponent(WeatherWidget);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const refreshBtn = fixture.debugElement.query(By.css('.offline-container button'));
+    expect(refreshBtn).toBeTruthy();
+
+    refreshBtn.nativeElement.click();
+    fixture.detectChanges();
+
+    expect(mockWeatherService.clearCache).toHaveBeenCalled();
+    expect(mockWeatherService.getForecast).toHaveBeenCalledTimes(2);
   });
 });

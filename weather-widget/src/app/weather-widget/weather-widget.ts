@@ -7,7 +7,6 @@ import { environment } from '../../environments/environment';
 import {MatIcon} from '@angular/material/icon';
 import {DatePipe} from '@angular/common';
 import {WeatherService} from '../services/weather';
-import {toSignal} from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-weather-widget',
@@ -38,18 +37,24 @@ export class WeatherWidget implements OnInit {
   private weatherService = inject(WeatherService);
 
   // Pass geographic coordinates and map to a signal
-  readonly forecast = toSignal(
-    this.weatherService.getForecast('MLB',33, 70),
-    { initialValue: null }
-  );
+  readonly forecast = signal<any | null>(null);
 
   constructor() {
+    this.refreshForecast();
     effect(() => {
       const data = this.forecast();
       if (data) {
         this.processForecast(data);
         this.loading.set(false);
       }
+    });
+  }
+
+  refreshForecast(): void {
+    this.loading.set(true);
+    this.weatherService.clearCache();
+    this.weatherService.getForecast('MLB', 33, 70).subscribe(data => {
+        this.forecast.set(data);
     });
   }
 
