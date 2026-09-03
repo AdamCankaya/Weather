@@ -1,42 +1,53 @@
 <div class="trading-card" [class.production]="env.production">
-  @if (forecast(); as data) {
-
-    <!-- 1. TOP INFO SECTION (Border) -->
-    <div class="card-section header-section">
-      <div class="location-container">
-        <mat-icon class="location-icon">location_on</mat-icon>
-        <h2>{{ locationName }}</h2>
-      </div>
-      <p class="timestamp">Last updated: {{ lastUpdated | date:'shortTime' }}</p>
-    </div>
-
-    <!-- 2. GRAPHIC SECTION (Top one third, centered) -->
-    <div class="card-graphic-wrapper">
-      <div class="icon-background-effect"></div>
-      @if (showIcon) {
-        <mat-icon class="weather-main-icon" [fontIcon]="weatherIcon"></mat-icon>
-      }
-      <!-- toggle in bottom right -->
-      <button mat-icon-button class="toggle-icon-btn" (click)="toggleIcon()">
-        <mat-icon>{{ showIcon ? 'visibility_off' : 'visibility' }}</mat-icon>
-      </button>
-    </div>
-
-    <!-- 3. BOTTOM INFO SECTION (Border) -->
-    <div class="card-section details-section">
-      <div class="day-period">
-        <span class="day-of-week">{{ dayOfWeek }}</span> -
-        <span class="period-name">{{ periodName }}</span>
-      </div>
-      <div class="condition-summary">{{ loading() ? 'Updating' : (conditionSummary || '--') }}</div>
-      <div class="temp-main">
-        <span class="temperature">{{ temperature !== null ? temperature + '°C' : '--' }}</span>
-      </div>
+  @if (forecast()?.errorActive!) {
+    <div class="offline-container">
+      <span class="material-icons offline-icon">cloud_off</span>
+      <h3 class="offline-title">System Offline</h3>
+      <p class="offline-text">Network unavailable. Awaiting connection...</p>
     </div>
   } @else {
-    <div class="loading-placeholder" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; padding: 20px;">
-        <mat-spinner></mat-spinner>
-        <p>Loading weather data...</p>
-    </div>
+      @if (forecast(); as data) {
+
+        <!-- 1. TOP INFO SECTION (Border) -->
+        <div class="card-section header-section">
+          <div class="location-container">
+            <mat-icon class="location-icon">location_on</mat-icon>
+            <h2>{{ locationName }}</h2>
+          </div>
+          <p class="timestamp">Last updated: {{ lastUpdated | date:'shortTime' }}</p>
+        </div>
+
+        <!-- 2. GRAPHIC SECTION (Top one third, centered) -->
+        <div class="card-graphic-wrapper">
+          <div class="icon-background-effect"></div>
+          @if (showIcon) {
+            <mat-icon class="weather-main-icon" [fontIcon]="weatherIcon"></mat-icon>
+          }
+          <!-- toggle in bottom right -->
+          <button mat-icon-button class="toggle-icon-btn" (click)="toggleIcon()">
+            <mat-icon>{{ showIcon ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+        </div>
+
+        <!-- 3. BOTTOM INFO SECTION (Border) -->
+        <div class="card-section details-section">
+          <div class="day-period">
+            <span class="day-of-week">{{ dayOfWeek }}</span> -
+            <span class="period-name">{{ periodName }}</span>
+          </div>
+          <div class="condition-summary">{{ loading() ? 'Updating' : (conditionSummary || '--') }}</div>
+          <div class="temp-main" [class.error-state]="data.errorActive">
+            <span class="temperature">{{ temperature !== null ? temperature + '°C' : '--' }}</span>
+            <span class="condition-summary">
+              {{ data.errorActive ? 'System Offline' : null }}
+            </span>
+          </div>
+        </div>
+      } @else {
+        <div class="loading-placeholder" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; padding: 20px;">
+            <mat-spinner></mat-spinner>
+            <p>Loading weather data...</p>
+        </div>
+      }
   }
 </div>

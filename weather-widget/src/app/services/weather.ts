@@ -39,13 +39,13 @@ export class WeatherService {
           map(response => ({
             period1: response.forecast.properties.periods.find((p: any) => p.number === 1),
             gridpoints: response.gridpoints.properties
-          })),
-          shareReplay(1) // buffer the latest emission for all future subscribers
+          }))
         )),
       catchError(err => {
         console.error('WeatherService error:', err);
-        return of(null);
-      })
+        return of({errorActive: true});
+      }),
+      shareReplay(1) // buffer the latest emission for all future subscribers
     );
 
     return this.forecastCache$;
