@@ -47,4 +47,13 @@ offline card to prevent broken or missing data fields.
 - ng serve --configuration=production
 - https://localhost:4200
 
+
 ## Environments
+* development - longer network timeout value, different UI theme
+* production - shorter network timeout value, original UI theme
+
+
+## Future tasks 
+- Display weather based on user location
+- Expand weather data beyond next hour forecast
+- Implement Vitest for unit testing 

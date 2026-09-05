@@ -1,20 +1,21 @@
-<div class="trading-card" [class.production]="env.production">
+<!--aria busy alerts screen readers component is in state of flux-->
+<div class="trading-card" [class.production]="env.production" [attr.aria-busy]="loading()">
   @if (error()) {
-    <div class="offline-container">
-      <mat-icon class="offline-icon">cloud_off</mat-icon>
+<!--    screen reader assert interruption for error banner-->
+    <div class="offline-container" role="alert" aria-live="assertive">
+      <mat-icon class="offline-icon" aria-hidden="true">cloud_off</mat-icon>
       <h3 class="offline-title">System Offline</h3>
       <p class="offline-text">Network unavailable. Awaiting connection...</p>
       <button mat-button color="primary" class="refresh-button" (click)="refreshForecast()">
-        <mat-icon>refresh</mat-icon>
+        <mat-icon aria-hidden="true">refresh</mat-icon>
         Refresh forecast
       </button>
     </div>
   } @else if (forecast(); as data) {
-
         <!-- 1. TOP INFO SECTION -->
         <div class="card-section header-section">
           <div class="location-container">
-            <mat-icon class="location-icon">location_on</mat-icon>
+            <mat-icon class="location-icon" aria-hidden="true">location_on</mat-icon>
             <h2>{{ locationName }}</h2>
           </div>
           <p class="timestamp">Last updated: {{ lastUpdated | date:'shortTime' }}</p>
@@ -24,11 +25,11 @@
         <div class="card-graphic-wrapper">
           <div class="icon-background-effect"></div>
           @if (showIcon) {
-            <mat-icon class="weather-main-icon" [fontIcon]="weatherIcon()"></mat-icon>
+            <mat-icon class="weather-main-icon" aria-hidden="true" [fontIcon]="weatherIcon()"></mat-icon>
           }
           <!-- toggle in bottom right -->
-          <button mat-icon-button class="toggle-icon-btn" (click)="toggleIcon()">
-            <mat-icon>{{ showIcon ? 'visibility_off' : 'visibility' }}</mat-icon>
+          <button mat-icon-button class="toggle-icon-btn" (click)="toggleIcon()" aria-label="Toggle weather icon visibility">
+            <mat-icon aria-hidden="true">{{ showIcon ? 'visibility_off' : 'visibility' }}</mat-icon>
           </button>
         </div>
 
@@ -44,8 +45,8 @@
           </div>
         </div>
   } @else {
-    <div class="loading-placeholder">
-        <mat-spinner></mat-spinner>
+    <div class="loading-placeholder" role="status" aria-live="polite">
+        <mat-spinner aria-hidden="true"></mat-spinner>
         <p>Loading weather data...</p>
     </div>
   }

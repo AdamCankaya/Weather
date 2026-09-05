@@ -1,11 +1,11 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
 import { WeatherWidget } from './weather-widget';
 import { By } from '@angular/platform-browser';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideHttpClient, withFetch } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { WeatherService } from '../services/weather';
-import { of, throwError } from 'rxjs';
+import {of, Subject, throwError} from 'rxjs';
 
 describe('WeatherWidget', () => {
   let component: WeatherWidget;
@@ -175,5 +175,64 @@ describe('WeatherWidget', () => {
 
     expect(mockWeatherService.clearCache).toHaveBeenCalled();
     expect(mockWeatherService.getForecast).toHaveBeenCalledTimes(2);
+  });
+
+  it('should apply assertive aria-live and alert role on network error', async () => {
+    mockWeatherService.getForecast.and.returnValue(throwError(() => new Error('Network error')));
+    fixture = TestBed.createComponent(WeatherWidget);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    const errorBanner = fixture.nativeElement.querySelector('.offline-container');
+
+    // Verify the error banner interrupts the screen reader
+    expect(errorBanner).toBeTruthy();
+    expect(errorBanner.getAttribute('role')).toBe('alert');
+    expect(errorBanner.getAttribute('aria-live')).toBe('assertive');
+  });
+
+  it('should apply polite aria-live and status role during loading', async () => {
+    // 1. Get a reference to the mocked service
+    const weatherService = TestBed.inject(WeatherService) as jasmine.SpyObj<WeatherService>;
+
+    // 2. Return a pending Subject so the request never completes, trapping it in the loading state
+    const pendingRequest = new Subject<any>();
+    weatherService.getForecast.and.returnValue(pendingRequest.asObservable());
+
+    fixture = TestBed.createComponent(WeatherWidget);
+    component = fixture.componentInstance;
+
+    // 3. Trigger initial component render
+    fixture.detectChanges();
+
+    // 4. Use a native Promise to yield the JavaScript event loop for 10ms.
+    // This allows the rxResource's internal timer(0) to execute without needing fakeAsync.
+    await new Promise(resolve => setTimeout(resolve, 10));
+
+    // 5. Trigger change detection again to render the updated HTML
+    fixture.detectChanges();
+
+    const loadingContainer = fixture.nativeElement.querySelector('.loading-placeholder');
+
+    // 6. Assertions
+    expect(loadingContainer).withContext('Loading placeholder was not found in the DOM').toBeTruthy();
+    expect(loadingContainer.getAttribute('role')).toBe('status');
+    expect(loadingContainer.getAttribute('aria-live')).toBe('polite');
+  });
+
+  it('should hide decorative icons from screen readers', async () => {
+    fixture = TestBed.createComponent(WeatherWidget);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    // Query a decorative icon, such as the location pin
+    const locationIcon = fixture.nativeElement.querySelector('.location-icon');
+
+    expect(locationIcon).toBeTruthy();
+    expect(locationIcon.getAttribute('aria-hidden')).toBe('true');
   });
 });
