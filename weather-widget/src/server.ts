@@ -7,6 +7,8 @@ import {
 import express from 'express';
 import { join } from 'node:path';
 
+// Node.js server to handle HTTP requests and serve the Angular application
+
 const browserDistFolder = join(import.meta.dirname, '../browser');
 
 const app = express();

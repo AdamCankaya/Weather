@@ -43,9 +43,9 @@ offline card to prevent broken or missing data fields.
 - npm install
 - ng build
 - ng build --configuration production
-- npx http-server dist/weather-widget/browser -p 8080
+- npx http-server dist/weather-widget/browser -p 4200
 - ng serve
-- https://localhost:4200 (dev host)
-- https://localhost:8080 (prod host)
+- ng serve --configuration=production
+- https://localhost:4200
 
 ## Environments
