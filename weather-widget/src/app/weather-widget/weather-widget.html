@@ -1,5 +1,5 @@
 <div class="trading-card" [class.production]="env.production">
-  @if (forecast()?.errorActive!) {
+  @if (error()) {
     <div class="offline-container">
       <mat-icon class="offline-icon">cloud_off</mat-icon>
       <h3 class="offline-title">System Offline</h3>
@@ -9,10 +9,9 @@
         Refresh forecast
       </button>
     </div>
-  } @else {
-      @if (forecast(); as data) {
+  } @else if (forecast(); as data) {
 
-        <!-- 1. TOP INFO SECTION (Border) -->
+        <!-- 1. TOP INFO SECTION -->
         <div class="card-section header-section">
           <div class="location-container">
             <mat-icon class="location-icon">location_on</mat-icon>
@@ -21,7 +20,7 @@
           <p class="timestamp">Last updated: {{ lastUpdated | date:'shortTime' }}</p>
         </div>
 
-        <!-- 2. GRAPHIC SECTION (Top one third, centered) -->
+        <!-- 2. GRAPHIC SECTION (Top one third) -->
         <div class="card-graphic-wrapper">
           <div class="icon-background-effect"></div>
           @if (showIcon) {
@@ -33,25 +32,21 @@
           </button>
         </div>
 
-        <!-- 3. BOTTOM INFO SECTION (Border) -->
+        <!-- 3. BOTTOM INFO SECTION -->
         <div class="card-section details-section">
           <div class="day-period">
             <span class="day-of-week">{{ dayOfWeek }}</span> -
             <span class="period-name">{{ periodName() }}</span>
           </div>
           <div class="condition-summary">{{ loading() ? 'Updating' : (conditionSummary() || '--') }}</div>
-          <div class="temp-main" [class.error-state]="data.errorActive">
+          <div class="temp-main">
             <span class="temperature">{{ temperature() !== null ? temperature() + '°C' : '--' }}</span>
-            <span class="condition-summary">
-              {{ data.errorActive ? 'System Offline' : null }}
-            </span>
           </div>
         </div>
-      } @else {
-        <div class="loading-placeholder">
-            <mat-spinner></mat-spinner>
-            <p>Loading weather data...</p>
-        </div>
-      }
+  } @else {
+    <div class="loading-placeholder">
+        <mat-spinner></mat-spinner>
+        <p>Loading weather data...</p>
+    </div>
   }
 </div>

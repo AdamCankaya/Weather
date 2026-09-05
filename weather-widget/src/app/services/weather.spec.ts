@@ -22,16 +22,16 @@ describe('WeatherService & WeatherWidget', () => {
       ]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(WeatherWidget);
-    component = fixture.componentInstance;
     service = TestBed.inject(WeatherService);
     httpTestingController = TestBed.inject(HttpTestingController);
 
-    // Flush the single initial request triggered on component creation
-    const req = httpTestingController.expectOne('https://api.weather.gov/gridpoints/MLB/33,70/forecast');
-    req.flush({ properties: { periods: [{ number: 1, temperature: 75, name: 'Today', shortForecast: 'Sunny' }] } });
+    spyOn(service, 'getForecast').and.returnValue(from([{ properties: { periods: [{ number: 1, temperature: 75, name: 'Today', shortForecast: 'Sunny' }] } }]));
 
+    fixture = TestBed.createComponent(WeatherWidget);
+    component = fixture.componentInstance;
+    
     fixture.detectChanges();
+    await fixture.whenStable();
   });
 
   // verify only expected network calls
@@ -54,8 +54,8 @@ describe('WeatherService & WeatherWidget', () => {
   });
 
   it('should correctly convert Fahrenheit to Celsius', () => {
-    // Set the forecast signal directly to test the computed temperature conversion
-    component.forecast.set({
+    // Set the forecast resource value directly to test the computed temperature conversion
+    (component as any).forecastResource.value.set({
       period1: {
         name: 'Today',
         shortForecast: 'Sunny',
@@ -67,16 +67,16 @@ describe('WeatherService & WeatherWidget', () => {
   });
 
   it('should map specific weather conditions to the correct Material Icon', () => {
-    component.forecast.set({ period1: { shortForecast: 'Mostly Sunny' } });
+    (component as any).forecastResource.value.set({ period1: { shortForecast: 'Mostly Sunny' } });
     expect(component.weatherIcon()).toBe('wb_sunny');
 
-    component.forecast.set({ period1: { shortForecast: 'Chance of Rain Showers' } });
+    (component as any).forecastResource.value.set({ period1: { shortForecast: 'Chance of Rain Showers' } });
     expect(component.weatherIcon()).toBe('rainy');
 
-    component.forecast.set({ period1: { shortForecast: 'Severe Thunderstorms' } });
+    (component as any).forecastResource.value.set({ period1: { shortForecast: 'Severe Thunderstorms' } });
     expect(component.weatherIcon()).toBe('thunderstorm');
 
-    component.forecast.set({ period1: { shortForecast: 'Windy and overcast' } });
+    (component as any).forecastResource.value.set({ period1: { shortForecast: 'Windy and overcast' } });
     expect(component.weatherIcon()).toBe('wb_cloudy');
   });
 
@@ -88,19 +88,22 @@ describe('WeatherService & WeatherWidget', () => {
     };
 
     // Return an observable backed by a Promise to defer execution
-    const getForecastSpy = spyOn(component['weatherService'], 'getForecast')
+    const getForecastSpy = (component['weatherService'].getForecast as jasmine.Spy)
       .and.returnValue(from(Promise.resolve(mockResponse)));
 
     const clearCacheSpy = spyOn(component['weatherService'], 'clearCache');
 
     component.refreshForecast();
+    fixture.detectChanges();
 
-    // Verify that cache clearing was requested and API was called
+    // Verify loading state instantly updates
     expect(component.loading()).toBeTrue();
-    expect(clearCacheSpy).toHaveBeenCalled();
-    expect(getForecastSpy).toHaveBeenCalledWith('MLB', 33, 70);
 
     await fixture.whenStable();
+    fixture.detectChanges();
+    
+    expect(clearCacheSpy).toHaveBeenCalled();
+    expect(getForecastSpy).toHaveBeenCalledWith('MLB', 33, 70);
 
     // Verify final states after the response data populates and loading finishes
     expect(component.forecast()).toEqual(mockResponse);
@@ -108,6 +111,7 @@ describe('WeatherService & WeatherWidget', () => {
   });
 
   it('should fetch forecast data with a single HTTP call', () => {
+    (service.getForecast as jasmine.Spy).and.callThrough();
     // Clear cache to force a new request
     service.clearCache();
 

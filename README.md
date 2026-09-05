@@ -2,8 +2,7 @@
 
 A production-ready Single Page Application (SPA) built with Angular 20 that displays real-time weather data from the 
 National Weather Service (NWS) API. This widget is designed for high performance, using reactive state management and 
-resilient network failure handling.
-
+resilient network failure handling. Tested for both Edge and Chrome browsers.
 
 ## Architecture Decisions
 * All work to be completed on the client side - no backend server such as Java required. 

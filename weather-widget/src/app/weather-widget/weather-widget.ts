@@ -1,4 +1,5 @@
-import { Component, inject, signal, computed } from '@angular/core';
+import { Component, inject, computed } from '@angular/core';
+import { rxResource } from '@angular/core/rxjs-interop';
 import { MatCardModule } from '@angular/material/card';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
@@ -28,10 +29,19 @@ export class WeatherWidget {
   lastUpdated = new Date();
   dayOfWeek = new Date().toLocaleDateString('en-US', { weekday: 'long' });
   showIcon = false;
-  loading = signal(true);
 
   private weatherService = inject(WeatherService);
-  readonly forecast = signal<any | null>(null);
+  
+  private forecastResource = rxResource({
+    stream: () => {
+      this.weatherService.clearCache();
+      return this.weatherService.getForecast('MLB', 33, 70);
+    }
+  });
+
+  readonly forecast = computed(() => (this.forecastResource.value() as any) ?? null);
+  readonly loading = computed(() => this.forecastResource.isLoading());
+  readonly error = computed(() => this.forecastResource.error());
 
   // create state using computed signals
   // compute() takes a function and returns a read-only signal with lazy evaluation
@@ -59,17 +69,12 @@ export class WeatherWidget {
   });
 
   constructor() {
-    this.refreshForecast();
+    // rxResource automatically loads on initialization
   }
 
   // todo get rid of hard coded coordinates
   refreshForecast(): void {
-    this.loading.set(true);
-    this.weatherService.clearCache();
-    this.weatherService.getForecast('MLB', 33, 70).subscribe(data => {
-      this.forecast.set(data);
-      this.loading.set(false);
-    });
+    this.forecastResource.reload();
   }
 
   toggleIcon(): void {

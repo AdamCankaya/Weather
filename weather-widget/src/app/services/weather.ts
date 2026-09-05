@@ -1,7 +1,7 @@
 import { Injectable, inject, PLATFORM_ID } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import {Observable, of, shareReplay} from 'rxjs';
-import { map, timeout, retry, catchError } from 'rxjs/operators';
+import { map, timeout, retry } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { isPlatformServer } from '@angular/common';
 
@@ -39,10 +39,6 @@ export class WeatherService {
         period1: response.properties.periods.find((p: any) => p.number === 1),
         gridpoints: response.properties
       })),
-      catchError(err => {
-        console.error('WeatherService error:', err);
-        return of({ errorActive: true });
-      }),
       shareReplay(1)  // save data in memory (1 emission) and prevent multiple new HTTP calls
     );
 

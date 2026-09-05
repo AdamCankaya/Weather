@@ -5,7 +5,7 @@ import { provideZonelessChangeDetection } from '@angular/core';
 import { provideHttpClient, withFetch } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { WeatherService } from '../services/weather';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 
 describe('WeatherWidget', () => {
   let component: WeatherWidget;
@@ -37,28 +37,34 @@ describe('WeatherWidget', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should display the correct location name', () => {
+  it('should display the correct location name', async () => {
     fixture = TestBed.createComponent(WeatherWidget);
     component = fixture.componentInstance;
+    fixture.detectChanges();
+    await fixture.whenStable();
     fixture.detectChanges();
     const locationElement = fixture.debugElement.query(By.css('.location-container h2')).nativeElement;
     expect(locationElement.textContent).toContain(component.locationName);
   });
 
-  it('should display the temperature', () => {
+  it('should display the temperature', async () => {
     fixture = TestBed.createComponent(WeatherWidget);
     component = fixture.componentInstance;
+    fixture.detectChanges();
+    await fixture.whenStable();
     fixture.detectChanges();
     const tempElement = fixture.debugElement.query(By.css('.temperature')).nativeElement;
     expect(tempElement.textContent).toContain(`${component.temperature()}°C`);
   });
 
-  it('should display period name', () => {
+  it('should display period name', async () => {
     mockWeatherService.getForecast.and.returnValue(of({
         period1: { temperature: 80, shortForecast: 'Sunny', name: 'This afternoon' }
     }));
     fixture = TestBed.createComponent(WeatherWidget);
     component = fixture.componentInstance;
+    fixture.detectChanges();
+    await fixture.whenStable();
     fixture.detectChanges();
     const periodNameElement = fixture.debugElement.query(By.css('.period-name')).nativeElement;
     expect(periodNameElement.textContent).toBe('This afternoon');
@@ -67,6 +73,8 @@ describe('WeatherWidget', () => {
   it('should toggle icon visibility', async () => {
     fixture = TestBed.createComponent(WeatherWidget);
     component = fixture.componentInstance;
+    fixture.detectChanges();
+    await fixture.whenStable();
     fixture.detectChanges();
 
     expect(component.showIcon).toBeFalse();
@@ -81,42 +89,50 @@ describe('WeatherWidget', () => {
     expect(fixture.debugElement.query(By.css('.weather-main-icon'))).toBeTruthy();
   });
 
-  it('should display day of week', () => {
+  it('should display day of week', async () => {
     fixture = TestBed.createComponent(WeatherWidget);
     component = fixture.componentInstance;
+    fixture.detectChanges();
+    await fixture.whenStable();
     fixture.detectChanges();
     const dayElement = fixture.debugElement.query(By.css('.day-of-week')).nativeElement;
     expect(dayElement.textContent).toBe(component.dayOfWeek);
   });
 
-  it('should update weather icon based on forecast', () => {
+  it('should update weather icon based on forecast', async () => {
     mockWeatherService.getForecast.and.returnValue(of({
         period1: { temperature: 80, shortForecast: 'Thunderstorms', name: 'Afternoon' }
     }));
     fixture = TestBed.createComponent(WeatherWidget);
     component = fixture.componentInstance;
     fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
 
     expect(component.weatherIcon()).toBe('thunderstorm');
   });
 
-  it('should convert 91F to 32.8C', () => {
+  it('should convert 91F to 32.8C', async () => {
     mockWeatherService.getForecast.and.returnValue(of({
         period1: { temperature: 91, shortForecast: 'Sunny', name: 'Morning' }
     }));
     fixture = TestBed.createComponent(WeatherWidget);
     component = fixture.componentInstance;
     fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
     const tempElement = fixture.debugElement.query(By.css('.temperature')).nativeElement;
     expect(tempElement.textContent).toBe('32.8°C');
   });
 
-  it('should convert 88F to 31.1C', () => {
+  it('should convert 88F to 31.1C', async () => {
     mockWeatherService.getForecast.and.returnValue(of({
         period1: { temperature: 88, shortForecast: 'Sunny', name: 'Morning' }
     }));
     fixture = TestBed.createComponent(WeatherWidget);
     component = fixture.componentInstance;
+    fixture.detectChanges();
+    await fixture.whenStable();
     fixture.detectChanges();
     const tempElement = fixture.debugElement.query(By.css('.temperature')).nativeElement;
     expect(tempElement.textContent).toBe('31.1°C');
@@ -145,7 +161,7 @@ describe('WeatherWidget', () => {
   });
 
   it('should call clearCache and getForecast when Refresh button is clicked', async () => {
-    mockWeatherService.getForecast.and.returnValue(of({ errorActive: true }));
+    mockWeatherService.getForecast.and.returnValue(throwError(() => new Error('Network error')));
     fixture = TestBed.createComponent(WeatherWidget);
     component = fixture.componentInstance;
     fixture.detectChanges();
