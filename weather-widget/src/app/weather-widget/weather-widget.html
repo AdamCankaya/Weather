@@ -25,7 +25,7 @@
         <div class="card-graphic-wrapper">
           <div class="icon-background-effect"></div>
           @if (showIcon) {
-            <mat-icon class="weather-main-icon" [fontIcon]="weatherIcon"></mat-icon>
+            <mat-icon class="weather-main-icon" [fontIcon]="weatherIcon()"></mat-icon>
           }
           <!-- toggle in bottom right -->
           <button mat-icon-button class="toggle-icon-btn" (click)="toggleIcon()">
@@ -37,18 +37,18 @@
         <div class="card-section details-section">
           <div class="day-period">
             <span class="day-of-week">{{ dayOfWeek }}</span> -
-            <span class="period-name">{{ periodName }}</span>
+            <span class="period-name">{{ periodName() }}</span>
           </div>
-          <div class="condition-summary">{{ loading() ? 'Updating' : (conditionSummary || '--') }}</div>
+          <div class="condition-summary">{{ loading() ? 'Updating' : (conditionSummary() || '--') }}</div>
           <div class="temp-main" [class.error-state]="data.errorActive">
-            <span class="temperature">{{ temperature !== null ? temperature + '°C' : '--' }}</span>
+            <span class="temperature">{{ temperature() !== null ? temperature() + '°C' : '--' }}</span>
             <span class="condition-summary">
               {{ data.errorActive ? 'System Offline' : null }}
             </span>
           </div>
         </div>
       } @else {
-        <div class="loading-placeholder" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; padding: 20px;">
+        <div class="loading-placeholder">
             <mat-spinner></mat-spinner>
             <p>Loading weather data...</p>
         </div>

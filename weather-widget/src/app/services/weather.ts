@@ -1,7 +1,7 @@
 import { Injectable, inject, PLATFORM_ID } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import {Observable, forkJoin, of, shareReplay} from 'rxjs';
-import { map, timeout, retry, switchMap, catchError } from 'rxjs/operators';
+import {Observable, of, shareReplay} from 'rxjs';
+import { map, timeout, retry, catchError } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { isPlatformServer } from '@angular/common';
 
@@ -19,9 +19,10 @@ export class WeatherService {
   constructor() {
   }
 
-  getForecast(loc: String, lat: number, lon: number): Observable<any> {
+  getForecast(loc: string, lat: number, lon: number): Observable<any> {
+    // check if SSR is ongoing
     if (isPlatformServer(this.platformId)) {
-        return of(null);
+      return of(null);
     }
 
     // Return the cached stream if it already exists
@@ -29,23 +30,20 @@ export class WeatherService {
       return this.forecastCache$;
     }
 
+    // fire an http request with the given coordinates, timeout and retry count
     this.forecastCache$ = this.http.get<any>(`${this.apiUrl}/gridpoints/${loc}/${lat},${lon}/forecast`).pipe(
       timeout(this.timeoutValueMs),
       retry(this.retryCount),
-      switchMap(response => forkJoin({
-          forecast: this.http.get<any>(`${this.apiUrl}/gridpoints/${loc}/33,70/forecast`),
-          gridpoints: this.http.get<any>(`${this.apiUrl}/gridpoints/${loc}/33,70/forecast`)
-        }).pipe(
-          map(response => ({
-            period1: response.forecast.properties.periods.find((p: any) => p.number === 1),
-            gridpoints: response.gridpoints.properties
-          }))
-        )),
+      map(response => ({
+        // period 1 is the next hour forecast
+        period1: response.properties.periods.find((p: any) => p.number === 1),
+        gridpoints: response.properties
+      })),
       catchError(err => {
         console.error('WeatherService error:', err);
-        return of({errorActive: true});
+        return of({ errorActive: true });
       }),
-      shareReplay(1) // buffer the latest emission for all future subscribers
+      shareReplay(1)  // save data in memory (1 emission) and prevent multiple new HTTP calls
     );
 
     return this.forecastCache$;

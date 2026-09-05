@@ -50,7 +50,7 @@ describe('WeatherWidget', () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
     const tempElement = fixture.debugElement.query(By.css('.temperature')).nativeElement;
-    expect(tempElement.textContent).toContain(`${component.temperature}°C`);
+    expect(tempElement.textContent).toContain(`${component.temperature()}°C`);
   });
 
   it('should display period name', () => {
@@ -97,7 +97,7 @@ describe('WeatherWidget', () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
 
-    expect(component.weatherIcon).toBe('thunderstorm');
+    expect(component.weatherIcon()).toBe('thunderstorm');
   });
 
   it('should convert 91F to 32.8C', () => {

@@ -1,11 +1,11 @@
-$card-width: 400px;
-$card-height: 490px;
 $border-color: #333333;
 $prod-border-color: #d32f2f;
+$warning-color: #d32f2f;
 
+// main card container
 .trading-card {
-  width: $card-width;
-  height: $card-height;
+  width: 400px;
+  height: 490px;
   border: 4px solid $border-color;
   border-radius: 16px;
   display: flex;
@@ -16,6 +16,7 @@ $prod-border-color: #d32f2f;
   margin: 20px auto;
   font-family: Roboto, sans-serif;
 
+  // different border when running in production mode
   &.production {
     border-color: $prod-border-color;
   }
@@ -26,7 +27,7 @@ $prod-border-color: #d32f2f;
   box-sizing: border-box;
 }
 
-// Top Header Section
+// Top one third of card
 .header-section {
   background: #f5f5f5;
   border-bottom: 2px solid $border-color;
@@ -36,31 +37,25 @@ $prod-border-color: #d32f2f;
     align-items: center;
     gap: 8px;
 
-    .location-icon {
-      color: #1976d2;
-    }
-
-    h2 {
-      margin: 0;
-      font-size: 1.2rem;
-      font-weight: 700;
-    }
+    .location-icon { color: #1976d2; }
+    h2 { margin: 0; font-size: 1.2rem; font-weight: 700; }
   }
 
   .timestamp {
     margin: 4px 0 0 32px;
     font-size: 0.8rem;
-    color: #666666;
+    color: #666;
   }
 }
 
-// Middle Graphic Section (1/3 height)
+// Middle third of card
 .card-graphic-wrapper {
   flex: 0 0 33%;
   background: linear-gradient(135deg, #e1eec3 0%, #f05053 100%);
   display: flex;
-  justify-content: center;
+  flex-direction: row;
   align-items: center;
+  justify-content: center;
   border-bottom: 2px solid $border-color;
   position: relative;
 
@@ -68,18 +63,18 @@ $prod-border-color: #d32f2f;
     font-size: 100px;
     width: 100px;
     height: 100px;
-    color: #ffffff;
+    color: #fff;
   }
 
   .toggle-icon-btn {
     position: absolute;
     bottom: 5px;
     right: 5px;
-    color: white;
+    color: #fff;
   }
 }
 
-// Bottom Details Section
+// bottom third
 .details-section {
   flex: 1;
   display: flex;
@@ -91,7 +86,7 @@ $prod-border-color: #d32f2f;
   .day-period {
     font-size: 1.2rem;
     font-weight: 600;
-    color: #333333;
+    color: #333;
     margin-bottom: 8px;
     text-align: center;
 
@@ -104,45 +99,48 @@ $prod-border-color: #d32f2f;
 
   .condition-summary {
     font-size: 1.1rem;
-    color: #555555;
+    color: #555;
     margin-bottom: 8px;
     text-align: center;
+    font-weight: 500;
+    transition: color 0.3s ease;
   }
 
   .temp-main {
     display: flex;
-    justify-content: center;
+    flex-direction: row;
     align-items: center;
+    justify-content: center;
     margin-bottom: 16px;
 
     .temperature {
       font-size: 3rem;
       font-weight: 800;
-      color: #222222;
+      color: #222;
     }
   }
+
+  // center the spinner while data loads
+  .loading-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: 20px;
+  }
 }
 
-// Default styling for the text
-.condition-summary {
-  font-size: 0.85rem;
-  font-weight: 500;
-  color: #666; // Standard nominal color
-  transition: color 0.3s ease;
-}
-
-// Warning styling applied conditionally by [class.error-state]="data.errorActive"
+// error state for when network fails
 .error-state {
-  .temperature {
-    color: #d32f2f; // Warning red
-  }
-
+  .temperature,
   .condition-summary {
-    color: #d32f2f; // Warning red
-    font-weight: 700;
+    color: $warning-color;
   }
+  .condition-summary { font-weight: 700; }
 }
 
+// Fallback container if user is offline
 .offline-container {
   display: flex;
   flex-direction: column;
@@ -167,14 +165,11 @@ $prod-border-color: #d32f2f;
   .offline-title {
     font-size: 1.25rem;
     font-weight: 600;
-    color: #d32f2f;
+    color: $warning-color;
     margin: 0 0 0.5rem 0;
   }
 
-  .offline-text {
-    font-size: 0.9rem;
-    margin: 0;
-  }
+  .offline-text { font-size: 0.9rem; margin: 0; }
 
   .refresh-button {
     margin-top: 1rem;
