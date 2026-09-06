@@ -1,13 +1,14 @@
-import {Component, inject, computed, PLATFORM_ID} from '@angular/core';
-import { rxResource } from '@angular/core/rxjs-interop';
+import {Component, inject, computed, PLATFORM_ID, DestroyRef, signal} from '@angular/core';
+import {rxResource, takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import { MatCardModule } from '@angular/material/card';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { environment } from '../../environments/environment';
 import { MatIcon } from '@angular/material/icon';
-import {DatePipe, isPlatformBrowser} from '@angular/common';
+import { DatePipe, isPlatformBrowser } from '@angular/common';
 import { WeatherService } from '../services/weather';
+import {interval, startWith} from 'rxjs';
 
 @Component({
   selector: 'app-weather-widget',
@@ -25,9 +26,13 @@ import { WeatherService } from '../services/weather';
 })
 export class WeatherWidget {
   private platformId = inject(PLATFORM_ID);
+  private destroyRef = inject(DestroyRef);
+  private pollTrigger = signal(0);
+
   env = environment;
   locationName = 'Melbourne, FL (MLB)';
-  lastUpdated = new Date();
+  lastUpdated = computed(() => this.forecast.value()?.timestamp ?? new Date());
+  // TODO make dayOfWeek computed() to avoid midnight issues
   dayOfWeek = new Date().toLocaleDateString('en-US', { weekday: 'long' });
   showIcon = false;
 
@@ -40,7 +45,11 @@ export class WeatherWidget {
     }
   });
 
-  readonly forecast = computed(() => (this.forecastResource.value() as any) ?? null);
+  readonly forecast = rxResource({
+    params: () => ({ tick: this.pollTrigger() }),
+    stream: ({ params }) => this.weatherService.getForecast( 'MLB', 33, 70 )
+  });
+
   readonly loading = computed(() => this.forecastResource.isLoading());
   readonly error = computed(() => this.forecastResource.error());
 
@@ -48,7 +57,7 @@ export class WeatherWidget {
   // compute() takes a function and returns a read-only signal with lazy evaluation
   // period = 1 is the next hour forecast so use that
   // data comes filtered for period 1 from the service
-  readonly periodData = computed(() => this.forecast()?.period1 ?? null);
+  readonly periodData = computed(() => this.forecast.value()?.period1 ?? null);
 
   // temperature data comes in F so convert it to C
   readonly temperature = computed(() => {
@@ -71,6 +80,18 @@ export class WeatherWidget {
 
   constructor() {
     // rxResource automatically loads on initialization
+    if (isPlatformBrowser(this.platformId)) {
+      interval(300000)  // update weather data every 5 minutes
+        .pipe(
+          startWith(0),
+          takeUntilDestroyed(this.destroyRef)
+        )
+        .subscribe(() => {
+          // console.log('updating weather data...')
+          // Incrementing the signal forces rxResource to re-fetch
+          this.pollTrigger.update(val => val + 1);
+        });
+    }
   }
 
   refreshForecast(): void {

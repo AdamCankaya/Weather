@@ -11,14 +11,14 @@
         <span i18n="@@weatherWidget.refresh">Refresh forecast</span>
       </button>
     </div>
-  } @else if (forecast(); as data) {
+  } @else if (forecast.value(); as data) {
         <!-- 1. TOP INFO SECTION -->
         <div class="card-section header-section">
           <div class="location-container">
             <mat-icon class="location-icon" aria-hidden="true">location_on</mat-icon>
             <h2>{{ locationName }}</h2>
           </div>
-          <p class="timestamp" i18n="@@weatherWidget.lastUpdated">Last updated: {{ lastUpdated | date:'shortTime' }}</p>
+          <p class="timestamp" i18n="@@weatherWidget.lastUpdated">Last updated: {{ lastUpdated() | date:'shortTime' }}</p>
         </div>
 
         <!-- 2. GRAPHIC SECTION (Top one third) -->
