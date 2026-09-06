@@ -4,11 +4,11 @@
 <!--    screen reader assert interruption for error banner-->
     <div class="offline-container" role="alert" aria-live="assertive">
       <mat-icon class="offline-icon" aria-hidden="true">cloud_off</mat-icon>
-      <h3 class="offline-title">System Offline</h3>
-      <p class="offline-text">Network unavailable. Awaiting connection...</p>
+      <h3 class="offline-title" i18n="@@weatherWidget.offlineTitle">System Offline</h3>
+      <p class="offline-text" i18n="@@weatherWidget.offlineText">Network unavailable. Awaiting connection...</p>
       <button mat-button color="primary" class="refresh-button" (click)="refreshForecast()">
         <mat-icon aria-hidden="true">refresh</mat-icon>
-        Refresh forecast
+        <span i18n="@@weatherWidget.refresh">Refresh forecast</span>
       </button>
     </div>
   } @else if (forecast(); as data) {
@@ -18,7 +18,7 @@
             <mat-icon class="location-icon" aria-hidden="true">location_on</mat-icon>
             <h2>{{ locationName }}</h2>
           </div>
-          <p class="timestamp">Last updated: {{ lastUpdated | date:'shortTime' }}</p>
+          <p class="timestamp" i18n="@@weatherWidget.lastUpdated">Last updated: {{ lastUpdated | date:'shortTime' }}</p>
         </div>
 
         <!-- 2. GRAPHIC SECTION (Top one third) -->
@@ -28,7 +28,8 @@
             <mat-icon class="weather-main-icon" aria-hidden="true" [fontIcon]="weatherIcon()"></mat-icon>
           }
           <!-- toggle in bottom right -->
-          <button mat-icon-button class="toggle-icon-btn" (click)="toggleIcon()" aria-label="Toggle weather icon visibility">
+          <button mat-icon-button class="toggle-icon-btn" (click)="toggleIcon()"
+                  i18n-aria-label="@@weatherWidget.toggleIconAria" aria-label="Toggle weather icon visibility">
             <mat-icon aria-hidden="true">{{ showIcon ? 'visibility_off' : 'visibility' }}</mat-icon>
           </button>
         </div>
@@ -47,7 +48,7 @@
   } @else {
     <div class="loading-placeholder" role="status" aria-live="polite">
         <mat-spinner aria-hidden="true"></mat-spinner>
-        <p>Loading weather data...</p>
+        <p i18n="@@weatherWidget.loadingText">Loading weather data...</p>
     </div>
   }
 </div>

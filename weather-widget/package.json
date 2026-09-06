@@ -44,6 +44,7 @@
     "@angular/build": "^20.3.35",
     "@angular/cli": "^20.3.35",
     "@angular/compiler-cli": "^20.3.0",
+    "@angular/localize": "^20.3.30",
     "@types/express": "^5.0.1",
     "@types/jasmine": "~5.1.0",
     "@types/node": "^20.17.19",

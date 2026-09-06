@@ -35,25 +35,31 @@ active weather data, and offline fallback, based only on the derived signal stat
 offline card to prevent broken or missing data fields.
 
 * Locally Bundled Typography: Google Material Icons are bundled directly into the application's build configuration 
-(angular.json) to ensure that critical vector graphics still can render when the browser has a network failure.
+(angular.json) to ensure that icon graphics still can render when the browser has a network failure.
 
 
 ## Build and deploy instructions
-- npm install
-- ng build
-- ng build --configuration production
-- npx http-server dist/weather-widget/browser -p 4200
-- ng serve
-- ng serve --configuration=production
+- **npm install**
+- ng test
+- **ng build**
+- ng build --configuration production (build for production environment)
+- ng build --localize (build with localization)
+- ng build --configuration=es-build (build only Spanish)
+- ng extract-i18n (build the i18n message files)
+- npx http-server dist/weather-widget/browser -p 4200 (serves dist files)
+- **ng serve**
+- ng serve --configuration=production (serve production environment)
+- ng serve --configuration=es (serve in Spanish)
 - https://localhost:4200
 
 
 ## Environments
-* development - longer network timeout value, different UI theme
+* development (default) - longer network timeout value, different UI theme
 * production - shorter network timeout value, original UI theme
 
 
 ## Future tasks 
 - Display weather based on user location
 - Expand weather data beyond next hour forecast
+- Implement localization (units, time format) and internationalization (language) for weather data
 - Implement Vitest for unit testing 

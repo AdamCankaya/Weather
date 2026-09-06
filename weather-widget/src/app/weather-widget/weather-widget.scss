@@ -119,16 +119,17 @@ $warning-color: #d32f2f;
       color: #222;
     }
   }
+}
 
-  // center the spinner while data loads
-  .loading-placeholder {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-    padding: 20px;
-  }
+// center the spinner while data loads
+.loading-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 20px;
+  flex: 1;
 }
 
 // error state for when network fails
