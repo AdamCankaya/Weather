@@ -1,4 +1,4 @@
-import {Component, inject, computed, PLATFORM_ID, DestroyRef, signal} from '@angular/core';
+import {Component, inject, computed, PLATFORM_ID, DestroyRef} from '@angular/core';
 import {rxResource, takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import { MatCardModule } from '@angular/material/card';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -27,7 +27,6 @@ import {interval, startWith} from 'rxjs';
 export class WeatherWidget {
   private platformId = inject(PLATFORM_ID);
   private destroyRef = inject(DestroyRef);
-  private pollTrigger = signal(0);
 
   env = environment;
   locationName = 'Melbourne, FL (MLB)';
@@ -37,17 +36,14 @@ export class WeatherWidget {
 
   private weatherService = inject(WeatherService);
 
-  private forecastResource = rxResource({
+  readonly forecastResource = rxResource({
     stream: () => {
       this.weatherService.clearCache();
       return this.weatherService.getForecast('MLB', 33, 70);
     }
   });
 
-  readonly forecast = rxResource({
-    params: () => ({ tick: this.pollTrigger() }),
-    stream: ({ params }) => this.weatherService.getForecast( 'MLB', 33, 70 )
-  });
+  readonly forecast = this.forecastResource;
 
   readonly loading = computed(() => this.forecastResource.isLoading());
   readonly error = computed(() => this.forecastResource.error());
@@ -82,13 +78,11 @@ export class WeatherWidget {
     if (isPlatformBrowser(this.platformId)) {
       interval(300000)  // update weather data every 5 minutes
         .pipe(
-          startWith(0),
+          startWith(0), // run immediately for the first time
           takeUntilDestroyed(this.destroyRef)
         )
         .subscribe(() => {
-          // console.log('updating weather data...')
-          // Incrementing the signal forces rxResource to re-fetch
-          this.pollTrigger.update(val => val + 1);
+          this.forecastResource.reload();
         });
     }
   }

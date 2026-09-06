@@ -96,7 +96,7 @@ describe('WeatherWidget', () => {
     await fixture.whenStable();
     fixture.detectChanges();
     const dayElement = fixture.debugElement.query(By.css('.day-of-week')).nativeElement;
-    expect(dayElement.textContent).toBe(component.dayOfWeek);
+    expect(dayElement.textContent).toBe(component.dayOfWeek());
   });
 
   it('should update weather icon based on forecast', async () => {

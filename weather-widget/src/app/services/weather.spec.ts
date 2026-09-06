@@ -106,7 +106,7 @@ describe('WeatherService & WeatherWidget', () => {
     expect(getForecastSpy).toHaveBeenCalledWith('MLB', 33, 70);
 
     // Verify final states after the response data populates and loading finishes
-    expect(component.forecast()).toEqual(mockResponse);
+    expect(component.forecast.value()).toEqual(mockResponse);
     expect(component.loading()).toBeFalse();
   });
 
