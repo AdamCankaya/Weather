@@ -1,5 +1,5 @@
 import {ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
-import { provideHttpClient } from '@angular/common/http';
+import {provideHttpClient, withFetch} from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { WeatherWidget } from '../weather-widget/weather-widget';
@@ -17,7 +17,7 @@ describe('WeatherService & WeatherWidget', () => {
       imports: [WeatherWidget],
       providers: [
         provideZonelessChangeDetection(),
-        provideHttpClient(),
+        provideHttpClient(withFetch()), // fetch to support future SSR
         provideHttpClientTesting()
       ]
     }).compileComponents();
@@ -29,7 +29,7 @@ describe('WeatherService & WeatherWidget', () => {
 
     fixture = TestBed.createComponent(WeatherWidget);
     component = fixture.componentInstance;
-    
+
     fixture.detectChanges();
     await fixture.whenStable();
   });
@@ -101,7 +101,7 @@ describe('WeatherService & WeatherWidget', () => {
 
     await fixture.whenStable();
     fixture.detectChanges();
-    
+
     expect(clearCacheSpy).toHaveBeenCalled();
     expect(getForecastSpy).toHaveBeenCalledWith('MLB', 33, 70);
 

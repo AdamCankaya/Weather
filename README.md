@@ -63,3 +63,4 @@ offline card to prevent broken or missing data fields.
 - Expand weather data beyond next hour forecast
 - Implement localization (units, time format) and internationalization (language) for weather data
 - Implement Vitest for unit testing 
+- Measure Core Web Vitals (load time, page responsiveness, visual stability)

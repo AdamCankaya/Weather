@@ -1,4 +1,4 @@
-import { Component, inject, computed } from '@angular/core';
+import {Component, inject, computed, PLATFORM_ID} from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { MatCardModule } from '@angular/material/card';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -6,7 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { environment } from '../../environments/environment';
 import { MatIcon } from '@angular/material/icon';
-import { DatePipe } from '@angular/common';
+import {DatePipe, isPlatformBrowser} from '@angular/common';
 import { WeatherService } from '../services/weather';
 
 @Component({
@@ -24,6 +24,7 @@ import { WeatherService } from '../services/weather';
   styleUrl: './weather-widget.scss',
 })
 export class WeatherWidget {
+  private platformId = inject(PLATFORM_ID);
   env = environment;
   locationName = 'Melbourne, FL (MLB)';
   lastUpdated = new Date();
@@ -31,7 +32,7 @@ export class WeatherWidget {
   showIcon = false;
 
   private weatherService = inject(WeatherService);
-  
+
   private forecastResource = rxResource({
     stream: () => {
       this.weatherService.clearCache();
@@ -72,9 +73,12 @@ export class WeatherWidget {
     // rxResource automatically loads on initialization
   }
 
-  // todo get rid of hard coded coordinates
   refreshForecast(): void {
-    this.forecastResource.reload();
+    if (isPlatformBrowser(this.platformId)) { // render on the client only
+        this.forecastResource.reload();
+    } else {
+        console.log('Rendering on the server');
+    }
   }
 
   toggleIcon(): void {
