@@ -32,8 +32,7 @@ export class WeatherWidget {
   env = environment;
   locationName = 'Melbourne, FL (MLB)';
   lastUpdated = computed(() => this.forecast.value()?.timestamp ?? new Date());
-  // TODO make dayOfWeek computed() to avoid midnight issues
-  dayOfWeek = new Date().toLocaleDateString('en-US', { weekday: 'long' });
+  dayOfWeek = computed(() => this.lastUpdated().toLocaleDateString('en-US', { weekday: 'long' }));
   showIcon = false;
 
   private weatherService = inject(WeatherService);

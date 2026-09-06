@@ -37,7 +37,7 @@
         <!-- 3. BOTTOM INFO SECTION -->
         <div class="card-section details-section">
           <div class="day-period">
-            <span class="day-of-week">{{ dayOfWeek }}</span> -
+            <span class="day-of-week">{{ dayOfWeek() }}</span> -
             <span class="period-name">{{ periodName() }}</span>
           </div>
           <div class="condition-summary">{{ loading() ? 'Updating' : (conditionSummary() || '--') }}</div>
