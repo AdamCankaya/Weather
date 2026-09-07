@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+  <file source-language="en-US" datatype="plaintext" original="ng2.template">
+    <body>
+      <trans-unit id="weatherWidget.offlineTitle" datatype="html">
+        <source>System Offline</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/weather-widget/weather-widget.html</context>
+          <context context-type="linenumber">7,8</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="weatherWidget.offlineText" datatype="html">
+        <source>Network unavailable. Awaiting connection...</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/weather-widget/weather-widget.html</context>
+          <context context-type="linenumber">8,9</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="weatherWidget.refresh" datatype="html">
+        <source>Refresh forecast</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/weather-widget/weather-widget.html</context>
+          <context context-type="linenumber">11,14</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="weatherWidget.lastUpdated" datatype="html">
+        <source>Last updated: <x id="INTERPOLATION" equiv-text="{{ lastUpdated | date:&apos;shortTime&apos; }}"/></source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/weather-widget/weather-widget.html</context>
+          <context context-type="linenumber">21,22</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="weatherWidget.toggleIconAria" datatype="html">
+        <source>Toggle weather icon visibility</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/weather-widget/weather-widget.html</context>
+          <context context-type="linenumber">32,33</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="weatherWidget.loadingText" datatype="html">
+        <source>Loading weather data...</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/weather-widget/weather-widget.html</context>
+          <context context-type="linenumber">51,55</context>
+        </context-group>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>
