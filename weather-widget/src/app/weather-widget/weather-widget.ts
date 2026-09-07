@@ -43,23 +43,25 @@ export class WeatherWidget {
     }
   });
 
+  // create state using computed signals
+  // compute() takes a function and returns a read-only signal with lazy evaluation
   readonly loading = computed(() => this.forecast.isLoading());
   readonly error = computed(() => this.forecast.error());
 
-  // create state using computed signals
-  // compute() takes a function and returns a read-only signal with lazy evaluation
   // period = 1 is the next hour forecast so use that
   // data comes filtered for period 1 from the service
   readonly periodData = computed(() => this.forecast.value()?.period1 ?? null);
 
-  // temperature data comes in F so convert it to C
+  // temperature data comes in F so convert it to C with one decmal
   readonly temperature = computed(() => {
     const temp = this.periodData()?.temperature;
     return temp != null ? ((temp - 32) * 5 / 9).toFixed(1) : null;
   });
 
+  // morning, afternoon, Labor Day, etc
   readonly periodName = computed(() => this.periodData()?.name ?? null);
 
+  // sunny, cloudy, storms, etc
   readonly conditionSummary = computed(() => this.periodData()?.shortForecast ?? null);
 
   readonly weatherIcon = computed(() => {
@@ -80,7 +82,9 @@ export class WeatherWidget {
           takeUntilDestroyed(this.destroyRef)
         )
         .subscribe(() => {
-          console.log('updating weather data...');
+          if (!environment.production) {
+            console.log('updating weather data...');
+          }
           this.forecast.reload();
         });
     }
@@ -90,7 +94,9 @@ export class WeatherWidget {
     if (isPlatformBrowser(this.platformId)) { // render on the client only
         this.forecast.reload();
     } else {
+      if (!environment.production) {
         console.log('Rendering on the server');
+      }
     }
   }
 

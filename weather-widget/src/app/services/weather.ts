@@ -12,7 +12,7 @@ export class WeatherService {
   private http = inject(HttpClient);
   private apiUrl = environment.weatherApiUrl;
   private timeoutValueMs = environment.timeoutThresholdMs;
-  private retryCount = 2
+  private retryCount = environment.retryCount;
   private platformId = inject(PLATFORM_ID);
   private forecastCache$?: Observable<any>;
 
