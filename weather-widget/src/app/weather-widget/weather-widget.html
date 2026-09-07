@@ -51,4 +51,11 @@
         <p i18n="@@weatherWidget.loadingText">Loading weather data...</p>
     </div>
   }
+  @if (!env.production) {
+    <div class="debug-panel">
+      Status: {{ forecast.status() }} |
+      Loading: {{ forecast.isLoading() }} |
+      Has Error: {{ forecast.error() ? 'Yes' : 'No' }}
+    </div>
+  }
 </div>
