@@ -36,17 +36,15 @@ export class WeatherWidget {
 
   private weatherService = inject(WeatherService);
 
-  readonly forecastResource = rxResource({
+  readonly forecast = rxResource({
     stream: () => {
       this.weatherService.clearCache();
       return this.weatherService.getForecast('MLB', 33, 70);
     }
   });
 
-  readonly forecast = this.forecastResource;
-
-  readonly loading = computed(() => this.forecastResource.isLoading());
-  readonly error = computed(() => this.forecastResource.error());
+  readonly loading = computed(() => this.forecast.isLoading());
+  readonly error = computed(() => this.forecast.error());
 
   // create state using computed signals
   // compute() takes a function and returns a read-only signal with lazy evaluation
@@ -82,14 +80,15 @@ export class WeatherWidget {
           takeUntilDestroyed(this.destroyRef)
         )
         .subscribe(() => {
-          this.forecastResource.reload();
+          console.log('updating weather data...');
+          this.forecast.reload();
         });
     }
   }
 
   refreshForecast(): void {
     if (isPlatformBrowser(this.platformId)) { // render on the client only
-        this.forecastResource.reload();
+        this.forecast.reload();
     } else {
         console.log('Rendering on the server');
     }

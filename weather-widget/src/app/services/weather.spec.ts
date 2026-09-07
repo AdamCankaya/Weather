@@ -55,7 +55,7 @@ describe('WeatherService & WeatherWidget', () => {
 
   it('should correctly convert Fahrenheit to Celsius', () => {
     // Set the forecast resource value directly to test the computed temperature conversion
-    (component as any).forecastResource.value.set({
+    (component as any).forecast.value.set({
       period1: {
         name: 'Today',
         shortForecast: 'Sunny',
@@ -67,16 +67,16 @@ describe('WeatherService & WeatherWidget', () => {
   });
 
   it('should map specific weather conditions to the correct Material Icon', () => {
-    (component as any).forecastResource.value.set({ period1: { shortForecast: 'Mostly Sunny' } });
+    (component as any).forecast.value.set({ period1: { shortForecast: 'Mostly Sunny' } });
     expect(component.weatherIcon()).toBe('wb_sunny');
 
-    (component as any).forecastResource.value.set({ period1: { shortForecast: 'Chance of Rain Showers' } });
+    (component as any).forecast.value.set({ period1: { shortForecast: 'Chance of Rain Showers' } });
     expect(component.weatherIcon()).toBe('rainy');
 
-    (component as any).forecastResource.value.set({ period1: { shortForecast: 'Severe Thunderstorms' } });
+    (component as any).forecast.value.set({ period1: { shortForecast: 'Severe Thunderstorms' } });
     expect(component.weatherIcon()).toBe('thunderstorm');
 
-    (component as any).forecastResource.value.set({ period1: { shortForecast: 'Windy and overcast' } });
+    (component as any).forecast.value.set({ period1: { shortForecast: 'Windy and overcast' } });
     expect(component.weatherIcon()).toBe('wb_cloudy');
   });
 
