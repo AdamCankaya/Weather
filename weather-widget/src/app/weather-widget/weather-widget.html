@@ -55,7 +55,8 @@
     <div class="debug-panel">
       Status: {{ forecast.status() }} |
       Loading: {{ forecast.isLoading() }} |
-      Has Error: {{ forecast.error() ? 'Yes' : 'No' }}
+      Has Error: {{ forecast.error() ? 'Yes' : 'No' }} |
+      Env: {{ env.production ? 'Prod' : 'Dev' }}
     </div>
   }
 </div>
