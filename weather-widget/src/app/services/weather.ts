@@ -14,7 +14,7 @@ export class WeatherService {
   private timeoutValueMs = environment.timeoutThresholdMs;
   private retryCount = environment.retryCount;
   private platformId = inject(PLATFORM_ID);
-  private forecastCache$?: Observable<any>;
+  private forecast$?: Observable<any>;
 
   constructor() {
   }
@@ -25,29 +25,16 @@ export class WeatherService {
       return of(null);
     }
 
-    // Return the cached stream if it already exists
-    if (this.forecastCache$) {
-      return this.forecastCache$;
-    }
-
     // fire an http request with the given coordinates, timeout and retry count
-    this.forecastCache$ = this.http.get<any>(`${this.apiUrl}/gridpoints/${loc}/${lat},${lon}/forecast`).pipe(
-      timeout(this.timeoutValueMs),
-      retry(this.retryCount),
+    this.forecast$ = this.http.get<any>(`${this.apiUrl}/gridpoints/${loc}/${lat},${lon}/forecast`).pipe(
       map(response => ({
         // period 1 is the next hour forecast
-        period1: response.properties.periods.find((p: any) => p.number === 1),
-        gridpoints: response.properties
-      })),
-      shareReplay(1)  // save data in memory (1 emission) and prevent multiple new HTTP calls
+        period1: response?.properties?.periods?.find((p: any) => p.number === 1),
+        gridpoints: response?.properties
+      }))
     );
 
-    return this.forecastCache$;
-  }
-
-  // force a fresh data fetch
-  clearCache(): void {
-    this.forecastCache$ = undefined;
+    return this.forecast$;
   }
 
 }

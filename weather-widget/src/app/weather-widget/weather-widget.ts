@@ -8,7 +8,8 @@ import { environment } from '../../environments/environment';
 import { MatIcon } from '@angular/material/icon';
 import { DatePipe, isPlatformBrowser } from '@angular/common';
 import { WeatherService } from '../services/weather';
-import {interval, startWith} from 'rxjs';
+import {interval, shareReplay, startWith} from 'rxjs';
+import {retry, timeout} from 'rxjs/operators';
 
 @Component({
   selector: 'app-weather-widget',
@@ -38,8 +39,11 @@ export class WeatherWidget {
 
   readonly forecast = rxResource({
     stream: () => {
-      this.weatherService.clearCache();
-      return this.weatherService.getForecast('MLB', 33, 70);
+      return this.weatherService.getForecast('MLB', 33, 70).pipe(
+        timeout(environment.timeoutThresholdMs),
+        retry(environment.retryCount),
+        shareReplay({ bufferSize: 1, refCount: true })  // hold the most recent emission for new subscribers
+      );
     }
   });
 
@@ -78,7 +82,7 @@ export class WeatherWidget {
     if (isPlatformBrowser(this.platformId)) {
       interval(300000)  // update weather data every 5 minutes
         .pipe(
-          startWith(0), // run immediately for the first time
+          startWith(0), // run immediately for the first time - TBD delete?
           takeUntilDestroyed(this.destroyRef)
         )
         .subscribe(() => {

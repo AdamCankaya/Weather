@@ -91,8 +91,6 @@ describe('WeatherService & WeatherWidget', () => {
     const getForecastSpy = (component['weatherService'].getForecast as jasmine.Spy)
       .and.returnValue(from(Promise.resolve(mockResponse)));
 
-    const clearCacheSpy = spyOn(component['weatherService'], 'clearCache');
-
     component.refreshForecast();
     fixture.detectChanges();
 
@@ -102,7 +100,6 @@ describe('WeatherService & WeatherWidget', () => {
     await fixture.whenStable();
     fixture.detectChanges();
 
-    expect(clearCacheSpy).toHaveBeenCalled();
     expect(getForecastSpy).toHaveBeenCalledWith('MLB', 33, 70);
 
     // Verify final states after the response data populates and loading finishes
@@ -112,8 +109,6 @@ describe('WeatherService & WeatherWidget', () => {
 
   it('should fetch forecast data with a single HTTP call', () => {
     (service.getForecast as jasmine.Spy).and.callThrough();
-    // Clear cache to force a new request
-    service.clearCache();
 
     // 1. Call the service directly with grid coordinates
     service.getForecast('MLB', 33, 70).subscribe(data => {
