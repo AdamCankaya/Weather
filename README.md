@@ -4,36 +4,33 @@ The Angular MLB Weather Widget is a production-ready Single Page Application (SP
  high performance, using reactive state management and resilient network failure handling. Tested for both Edge and 
  Chrome browsers.
 
+## Initial Questions
+- Device type / resolution scaling
+- Part of a larger Angular app?
+- Network connectivity/stability?
+- Data volatility?
+- Number of concurrent users?
+- Angular version?
+- Localization?
+- SEO?
 
-## Architecture Decisions
-* Built with Angular 20, the project aims to deliver a high-performance experience by with work being completed on the 
+## Architecture Decisions for Reactive State Management
+* Built with Angular 20, the project aims to deliver a high-performance experience with work being completed on the 
  client side, leveraging the NWS API's permissive CORS policies to eliminate the need for a backend server.
 
-* We chose rxResource in conjunction with Angular Signals to effectively manage the asynchronous nature of the data
- fetching lifecycle. Unlike traditional approaches that require complex RxJS piping, rxResource provides native,
- declarative binding of isLoading, value, and error states into a single reactive object.
+* SSR (Server-Side Rendering) is not used yet, but is supported by the project for future implementation.
 
-* We implement RxJS shareReplay(1) to handle multicasting. It caches the latest emitted value from the observable so 
- that multiple subscribers can share the data without triggering redundant network traffic and memory is garbage 
- collected when user navigates away from component.
-
-
-## Reactive State Management
-* Angular rxResource combined with Signals to manage the asynchronous data lifecycle.
-
-* This simplifies state management significantly by keeping the UI automatically synchronized with the data fetching
- process without requiring manual subscriptions. This allows declarative control flow using Angular’s @if / @else 
- syntax, which allows the application to transition seamlessly between loading, active data, and offline states based 
- solely on derived signal states. 
-
-* This not only results in cleaner, more maintainable code but also enhances the application's overall resilience, 
- ensuring a consistent user experience even when network interruptions occur.
+* Use rxResource in conjunction with Angular Signals to effectively manage the asynchronous nature of the data
+ fetching lifecycle. This simplifies state management significantly by keeping the UI automatically synchronized with 
+ the data fetching process without requiring manual subscriptions and allows declarative control flow using Angular’s 
+ @if / @else syntax, which allows seemless transitions between loading spinner, active data, and offline fallback.
 
 * Automatic State Tracking: rxResource natively binds the isLoading, value, and error states into a single reactive 
  object, eliminating the need for complex catchError RxJS pipes or subscriptions.
 
-* Declarative Control Flow: Utilize Angular's @if / @else if syntax to nicely transition between loading spinner, 
- active weather data, and offline fallback, based only on the derived signal state.
+* We also implement RxJS shareReplay(1) to handle multicasting. It caches the latest emitted value from the observable so
+  that multiple subscribers can share the data without triggering redundant network traffic while memory is garbage
+  collected when the user navigates away from the component.
 
 
 ## Offline Resilience & Asset Bundling
@@ -43,12 +40,14 @@ The Angular MLB Weather Widget is a production-ready Single Page Application (SP
  offline card to prevent broken or missing data fields.
 
 * Locally Bundled Typography: Google Material Icons are bundled directly into the application's build configuration 
- (angular.json) to ensure that icon gr[README.md](weather-widget/README.md)aphics still can render when the browser has a network failure.
+ (angular.json) to ensure that icon graphics still can render when the browser has a network failure.
 
 
 ## Build and deploy instructions
 - **npm install**
 - ng test
+- ng lint
+- ng lint -fix
 - **ng build**
 - ng build --configuration production (build for production environment)
 - ng build --localize (build with localization)
@@ -62,8 +61,8 @@ The Angular MLB Weather Widget is a production-ready Single Page Application (SP
 
 
 ## Environments
-* development (default) - longer network timeout value, different UI theme
-* production - shorter network timeout value, original UI theme
+* development (default) - longer timeout values, different UI theme
+* production - shorter timeout values, original UI theme
 
 
 ## Future tasks 
@@ -72,4 +71,5 @@ The Angular MLB Weather Widget is a production-ready Single Page Application (SP
 - Implement localization (units, time format) and internationalization (language) for weather data
 - Implement Vitest for unit testing 
 - Look at API always returning 200 OK status code
-- Measure Core Web Vitals (load time, page responsiveness, visual stability)
+- Measure Core Web Vitals (load time, page responsiveness, visual stability) for SEO
+- Fix lint and prettier issues

@@ -9,7 +9,9 @@
     "test": "ng test",
     "build:prod": "ng build --configuration production",
     "serve:prod": "http-server dist/weather-widget/browser -p 8080",
-    "serve:ssr:weather-widget": "node dist/weather-widget/server/server.mjs"
+    "serve:ssr:weather-widget": "node dist/weather-widget/server/server.mjs",
+    "lint": "ng lint",
+    "format": "prettier --write \"src/**/*.{ts,html,scss,json}\""
   },
   "prettier": {
     "printWidth": 100,
@@ -48,12 +50,17 @@
     "@types/express": "^5.0.1",
     "@types/jasmine": "~5.1.0",
     "@types/node": "^20.17.19",
+    "angular-eslint": "20.7.0",
+    "eslint": "^9.39.1",
+    "eslint-config-prettier": "^10.1.8",
     "jasmine-core": "~5.9.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
-    "typescript": "~5.9.2"
+    "prettier": "^3.9.6",
+    "typescript": "~5.9.2",
+    "typescript-eslint": "8.46.4"
   }
 }
